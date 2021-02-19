@@ -53,7 +53,7 @@ impl WatchSystem {
     pub async fn build(&mut self) {
         if let Err(err) = self.build.build().await {
             // NOTE WELL: we use debug formatting here to ensure the error chain is displayed.
-            self.progress.println(format!("{:?}", err));
+            println!("{:?}", err);
         }
     }
 
@@ -95,7 +95,7 @@ impl WatchSystem {
         }
 
         if let Err(err) = self.build.build().await {
-            self.progress.println(format!("{}", err));
+            println!("{}", err);
         }
     }
 

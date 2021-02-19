@@ -50,7 +50,7 @@ impl Sass {
                 opts.output_style = sass_rs::OutputStyle::Compressed;
             }
             let css = spawn_blocking(move || sass_rs::compile_file(&path_str, opts)).await.map_err(|err| {
-                self.progress.println(err);
+                println!("{:?}", err);
                 anyhow!("error compiling sass for {:?}", &self.asset.path)
             })?;
 

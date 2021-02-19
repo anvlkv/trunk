@@ -44,7 +44,7 @@ impl ServeSystem {
         // Open the browser.
         if self.cfg.open {
             if let Err(err) = open::that(self.http_addr) {
-                self.progress.println(format!("error opening browser: {}", err));
+                println!("error opening browser: {}", err);
             }
         }
 
@@ -68,7 +68,7 @@ impl ServeSystem {
         // Build proxies.
         if let Some(backend) = &cfg.proxy_backend {
             let handler = Arc::new(ProxyHandlerHttp::new(backend.clone(), cfg.proxy_rewrite.clone()));
-            progress.println(format!("{} proxying {} -> {}\n", SERVER, handler.path(), &backend));
+            println!("{} proxying {} -> {}\n", SERVER, handler.path(), &backend);
             app.at(handler.path()).strip_prefix().all(move |req| {
                 let handler = handler.clone();
                 async move { handler.proxy_request(req).await }
@@ -76,7 +76,7 @@ impl ServeSystem {
         } else if let Some(proxies) = &cfg.proxies {
             for proxy in proxies.iter() {
                 let handler = Arc::new(ProxyHandlerHttp::new(proxy.backend.clone(), proxy.rewrite.clone()));
-                progress.println(format!("{} proxying {} -> {}\n", SERVER, handler.path(), &proxy.backend));
+                println!("{} proxying {} -> {}\n", SERVER, handler.path(), &proxy.backend);
                 app.at(handler.path()).strip_prefix().all(move |req| {
                     let handler = handler.clone();
                     async move { handler.proxy_request(req).await }
@@ -85,10 +85,10 @@ impl ServeSystem {
         }
 
         // Listen and serve.
-        progress.println(format!("{} server running at {}\n", SERVER, &http_addr));
+        println!("{} server running at {}\n", SERVER, &http_addr);
         Ok(spawn(async move {
             if let Err(err) = app.listen(listen_addr).await {
-                progress.println(err.to_string());
+                println!("{}", err.to_string());
             }
         }))
     }
